@@ -1,0 +1,33 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Ticki-tax</title>
+		<meta name="description" content="Minimax tic-tac-toe">
+		<meta name="author" content="Elliot Hatch">
+		<link rel="stylesheet" href="normalize.css">
+		<link rel="stylesheet" href="styles.css">
+	</head>
+
+	<body>
+		<div class="tic-tac-toe">
+			<div class="board">
+				<div class="square"><span></span></div>
+				<div class="square"><span></span></div>
+				<div class="square"><span></span></div>
+				<div class="square"><span></span></div>
+				<div class="square"><span></span></div>
+				<div class="square"><span></span></div>
+				<div class="square"><span></span></div>
+				<div class="square"><span></span></div>
+				<div class="square"><span></span></div>
+			</div>
+		<button onclick="window.TicTac.newGame(true)">New Game as X</button>
+		<button onclick="window.TicTac.newGame(false)">New Game as O</button>
+		<h2 class="end-text"></h2>
+		</div>
+		<script src="minmax.js"></script>
+		<script src="tictac.js"></script>
+	</body>
+</html>
