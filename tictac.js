@@ -53,7 +53,7 @@
 	function takeAiTurn(player, state) {
 		Minimax.statistics.lastStatesEvaluated = 0;
 		console.log('AI thinking...');
-		var aiMove = Minimax.minimax(player, state, player);
+		var aiMove = Minimax.minimax(player, state, player, -Infinity, Infinity);
 		console.log('Moves evaluated: ' + Minimax.statistics.lastStatesEvaluated);
 		return takeTurn(aiMove.index, Minimax.TURNS[player]);
 	}

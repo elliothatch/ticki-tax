@@ -92,7 +92,9 @@ function getWinner(state) {
 
 // player is who we're optimizing for
 // returns { value, index }
-function minimax(player, state, turn) {
+// alpha: current best for maximizer
+// beta: current best for minimizer
+function minimax(player, state, turn, alpha, beta) {
 	statistics.lastStatesEvaluated++;
 	var winner = getWinner(state);
 	if(winner !== BOARD_STATES.NONE) {
@@ -100,28 +102,45 @@ function minimax(player, state, turn) {
 	}
 
 	//create a new game state for each possible move and recurse
-	var moves = state.reduce(function(a, space, i) {
+	var validMoveIndexes = state.reduce(function(a, space, i) {
 		if(space === SPACES.BLANK) {
-			a.push({ index: i});
+			a.push(i);
 		}
 		return a;
-	}, []).map(function(obj) {
-		var newState = state.slice();
-		newState[obj.index] = TURNS[turn];
-		return {
-			index: obj.index,
-			value: minimax(player, newState, (turn + 1) % TURNS.length).value
-		};
-	});
+	}, []);
 
-	return moves.reduce(function(o, move, i) {
-		// maximize if it's our turn, minimize otherwise
-		if(o === null ||
-			((player === turn && move.value > o.value) || (player !== turn && move.value < o.value))) {
-			return move;
+	//if it's our turn we want to maximize, so the initial value is -inf
+	var bestMove = {
+		index: null,
+		value: (player === turn) ? -Infinity : Infinity
+	}
+
+	for(var i = 0; i < validMoveIndexes.length; i++) {
+		var moveIndex = validMoveIndexes[i];
+		var newState = state.slice();
+		newState[moveIndex] = TURNS[turn];
+
+		var branchValue = minimax(player, newState, (turn + 1) % TURNS.length, alpha, beta).value;
+		if(player === turn && branchValue > bestMove.value) {
+			//maximizing
+			bestMove.value = branchValue;
+			bestMove.index = moveIndex;
+			alpha = Math.max(alpha, bestMove.value);
 		}
-		return o;
-	}, null);
+		if(player !== turn && branchValue < bestMove.value) {
+			//minimizing
+			bestMove.value = branchValue;
+			bestMove.index = moveIndex;
+			beta = Math.min(beta, bestMove.value);
+		}
+
+		if(beta <= alpha) {
+			// cutoff
+			break;
+		}
+	}
+
+	return bestMove;
 }
 
 window.Minimax = {
